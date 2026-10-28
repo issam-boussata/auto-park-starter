@@ -56,3 +56,7 @@ export const voitures = [
     "statut": "Disponible"
   }
 ];
+
+export function ajouterVoiture(voiture){
+  voitures.push(voiture) ;
+}
