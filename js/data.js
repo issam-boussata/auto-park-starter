@@ -57,4 +57,6 @@ export const voitures = [
   }
 ];
 
-
+export function ajouterVoiture(voiture){
+  voitures.push(voiture) ;
+}

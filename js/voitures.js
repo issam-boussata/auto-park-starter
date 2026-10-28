@@ -172,7 +172,20 @@ const {
 const listeInputs = document.querySelectorAll("#marque", "#modele", "#immatriculation", "#categorie", "#prix-jour", "#statut")
 
 // une fonction pour creer et ajouter la nouvelle voiture
+function Ajouter(){
+    const voiture = {
+        id : voitures.length + 1 ,
+        marque : marque_input.value ,
+        modele : modele_input.value ,
+        immatriculation : immatriculation_input.value ,
+        categorie : categorie_input.value ,
+        prixJour : prix_jour_input.value ,
+        statut : statut_input.value 
+    }
 
+    ajouterVoiture(voiture) ;
+    Afficher(voitures) ;
+}
 
 // une fonction pour valide les champs est afficher les error si exist avant d'ajouter ou modifier
 function Valider_champs(){
