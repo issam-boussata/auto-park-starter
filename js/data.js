@@ -60,3 +60,7 @@ export const voitures = [
 export function ajouterVoiture(voiture){
   voitures.push(voiture) ;
 }
+
+export function SupprimerVoiture(indexVoiture , nombresVoiture){
+  voitures.splice(indexVoiture , nombresVoiture) ;
+}

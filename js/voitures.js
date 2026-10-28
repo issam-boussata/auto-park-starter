@@ -1,4 +1,4 @@
-import { voitures , ajouterVoiture } from './data.js';
+import { voitures, ajouterVoiture , SupprimerVoiture} from './data.js';
 
 //=====================Afficher================
 // une fonction pour creer les élements html pour afficher un voiture
@@ -25,6 +25,9 @@ function creer_tr_voiture(liste_voitures, voiture) {
     btn_modifier.textContent = "Modifier";
     const btn_supprimer = document.createElement("button");
     btn_supprimer.textContent = "Supprimer";
+    btn_supprimer.addEventListener("click" , ()=> {
+        Supprimer(voiture.id)
+    })
 
     // ajouter les atributes html
     span_immatriculation.classList.add("registration");
@@ -120,14 +123,14 @@ function getInputsHtmlForm() {
     const bouton_enregistrer = document.getElementById("bouton-enregistrer");
     const annuler_modification = document.getElementById("annuler-modification");
 
-    const erreur_marque = document.getElementById("erreur-marque") ;
-    const erreur_modele= document.getElementById("erreur-modele") ;
-    const aide_immatriculation = document.getElementById("aide-immatriculation") ;
-    const erreur_immatriculation = document.getElementById("erreur-immatriculation") ;
-    const erreur_categorie = document.getElementById("erreur-categorie") ;
-    const erreur_prix_jour = document.getElementById("erreur-prix-jour") ;
-    const erreur_statut = document.getElementById("erreur-statut") ;
-    const message_formulaire = document.getElementById("message-formulaire") ;
+    const erreur_marque = document.getElementById("erreur-marque");
+    const erreur_modele = document.getElementById("erreur-modele");
+    const aide_immatriculation = document.getElementById("aide-immatriculation");
+    const erreur_immatriculation = document.getElementById("erreur-immatriculation");
+    const erreur_categorie = document.getElementById("erreur-categorie");
+    const erreur_prix_jour = document.getElementById("erreur-prix-jour");
+    const erreur_statut = document.getElementById("erreur-statut");
+    const message_formulaire = document.getElementById("message-formulaire");
     return {
         formulaire_voiture: formulaire_voiture,
         marque_input: marque_input,
@@ -137,15 +140,15 @@ function getInputsHtmlForm() {
         prix_jour_input: prix_jour_input,
         statut_input: statut_input,
         bouton_enregistrer: bouton_enregistrer,
-        annuler_modification: annuler_modification , 
-        erreur_statut :erreur_statut ,
-        erreur_prix_jour : erreur_prix_jour ,
-        erreur_categorie : erreur_categorie ,
-        erreur_immatriculation :erreur_immatriculation , 
-        aide_immatriculation : aide_immatriculation ,
-        erreur_modele : erreur_modele ,
-        erreur_marque :erreur_marque , 
-        message_formulaire:message_formulaire
+        annuler_modification: annuler_modification,
+        erreur_statut: erreur_statut,
+        erreur_prix_jour: erreur_prix_jour,
+        erreur_categorie: erreur_categorie,
+        erreur_immatriculation: erreur_immatriculation,
+        aide_immatriculation: aide_immatriculation,
+        erreur_modele: erreur_modele,
+        erreur_marque: erreur_marque,
+        message_formulaire: message_formulaire
     }
 }
 
@@ -159,81 +162,102 @@ const {
     prix_jour_input,
     statut_input,
     bouton_enregistrer,
-    annuler_modification ,
-    erreur_marque ,
-    erreur_modele ,
-    aide_immatriculation ,
-    erreur_immatriculation ,
-    erreur_categorie , 
-    erreur_prix_jour , 
-    erreur_statut ,
+    annuler_modification,
+    erreur_marque,
+    erreur_modele,
+    aide_immatriculation,
+    erreur_immatriculation,
+    erreur_categorie,
+    erreur_prix_jour,
+    erreur_statut,
     message_formulaire
 } = getInputsHtmlForm();
 const listeInputs = document.querySelectorAll("#marque", "#modele", "#immatriculation", "#categorie", "#prix-jour", "#statut")
 
+function Initial_champs() {
+    marque_input.value = "";
+    modele_input.value = "";
+    immatriculation_input.value = "";
+    categorie_input.value = "";
+    prix_jour_input.value = "";
+    statut_input.value = "";
+}
 // une fonction pour creer et ajouter la nouvelle voiture
-function Ajouter(){
+function Ajouter() {
     const voiture = {
-        id : voitures.length + 1 ,
-        marque : marque_input.value ,
-        modele : modele_input.value ,
-        immatriculation : immatriculation_input.value ,
-        categorie : categorie_input.value ,
-        prixJour : prix_jour_input.value ,
-        statut : statut_input.value 
+        id: voitures.length + 1,
+        marque: marque_input.value,
+        modele: modele_input.value,
+        immatriculation: immatriculation_input.value,
+        categorie: categorie_input.value,
+        prixJour: prix_jour_input.value,
+        statut: statut_input.value
     }
 
-    ajouterVoiture(voiture) ;
-    Afficher(voitures) ;
+    ajouterVoiture(voiture);
+    Afficher(voitures);
+    message_formulaire.textContent = "le voiture est ajouter aves sacces ."
+    setTimeout(() => {
+        message_formulaire.style.display = "none";
+    }, 3000);
+    Initial_champs();
 }
 
 // une fonction pour valide les champs est afficher les error si exist avant d'ajouter ou modifier
-function Valider_champs(){
-    
-    let is_immatricule_exist = false ; 
-    !marque_input.value.trim() ? erreur_marque.textContent = "entrer la marque du voiture"  : erreur_marque.textContent = "" ;
-    !modele_input.value.trim() ? erreur_modele.textContent = "entrer le modele du voiture" : erreur_modele.textContent = "" ;
+function Valider_champs() {
+
+    let is_immatricule_exist = false;
+    !marque_input.value.trim() ? erreur_marque.textContent = "entrer la marque du voiture" : erreur_marque.textContent = "";
+    !modele_input.value.trim() ? erreur_modele.textContent = "entrer le modele du voiture" : erreur_modele.textContent = "";
     // !immatriculation_input.value.trim() ? erreur_immatriculation.textContent = "entrer l'immatricule du voiture" : erreur_immatriculation.textContent = "" ;
-    !categorie_input.value.trim() ? erreur_categorie.textContent = "choisir la categorie du voiture" : erreur_categorie.textContent = "" ;
-    !prix_jour_input.value.trim() ? erreur_prix_jour.textContent = "entrer le prix par jour du voiture" : erreur_prix_jour.textContent = "" ;
-    !statut_input.value.trim() ? erreur_statut.textContent = "choisir le status " : erreur_statut.textContent = "" ;
+    !categorie_input.value.trim() ? erreur_categorie.textContent = "choisir la categorie du voiture" : erreur_categorie.textContent = "";
+    !prix_jour_input.value.trim() ? erreur_prix_jour.textContent = "entrer le prix par jour du voiture" : erreur_prix_jour.textContent = "";
+    !statut_input.value.trim() ? erreur_statut.textContent = "choisir le status " : erreur_statut.textContent = "";
 
     if (!immatriculation_input.value.trim()) {
-        erreur_immatriculation.textContent = "entrer l'immatricule du voiture" ;
+        erreur_immatriculation.textContent = "entrer l'immatricule du voiture";
     }
-    else if (voitures.some( v => v.immatriculation.toLowerCase() === immatriculation_input.value.trim().toLowerCase())) {
-        erreur_immatriculation.textContent = "c'immatricule est deja exist" ;
-        is_immatricule_exist = true ;
-    }else if(!(/^[a-zA-Z]{4}-\d{3}$/.test(immatriculation_input.value))){
-        
-        erreur_immatriculation.textContent = "respecter la form du matricule(4 lettres - 3 chifres)" ;
+    else if (voitures.some(v => v.immatriculation.toLowerCase() === immatriculation_input.value.trim().toLowerCase())) {
+        erreur_immatriculation.textContent = "c'immatricule est deja exist";
+        is_immatricule_exist = true;
+    } else if (!(/^[a-zA-Z]{4}-\d{3}$/.test(immatriculation_input.value))) {
+
+        erreur_immatriculation.textContent = "respecter la form du matricule(4 lettres - 3 chifres)";
     }
-    else{
-        erreur_immatriculation.textContent = "" ;
-        is_immatricule_exist = false ;
+    else {
+        erreur_immatriculation.textContent = "";
+        is_immatricule_exist = false;
     }
 
 
     if (prix_jour_input.value < 0) {
-        erreur_prix_jour.textContent = "entrer le prix par jour du voiture" ;
-    }else{
-        erreur_prix_jour.textContent = "" ;
+        erreur_prix_jour.textContent = "entrer le prix par jour du voiture";
+    } else {
+        erreur_prix_jour.textContent = "";
 
     }
 
-    if(/^[a-zA-Z]{4}-\d{3}$/.test(immatriculation_input.value) && marque_input.value.trim() && modele_input.value.trim() && categorie_input.value.trim() && prix_jour_input.value.trim() && statut_input.value.trim() && immatriculation_input.value.trim() && !is_immatricule_exist && prix_jour_input.value > 0 ){
+    if (/^[a-zA-Z]{4}-\d{3}$/.test(immatriculation_input.value) && marque_input.value.trim() && modele_input.value.trim() && categorie_input.value.trim() && prix_jour_input.value.trim() && statut_input.value.trim() && immatriculation_input.value.trim() && !is_immatricule_exist && prix_jour_input.value > 0) {
         Ajouter()
     }
 
-    
+
 }
 
+function Supprimer(id){
+    if (confirm("voulez vous supprimer cette voiture")) {
+        const voiture_index = voitures.findIndex(v => v.id === id) ;
+        SupprimerVoiture(voiture_index , 1) ;
+        alert("le voiture est supprimer avec sacces")
+        Afficher(voitures)
+    }
+}
 // appel au fonction losque on submit le form
-formulaire_voiture.addEventListener("submit" , (e)=>{
-    e.preventDefault() ;
-    Valider_champs() ;
-    
-} ) ;
+formulaire_voiture.addEventListener("submit", (e) => {
+    e.preventDefault();
+    Valider_champs();
+
+});
 
 
 
