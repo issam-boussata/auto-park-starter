@@ -64,3 +64,6 @@ export function ajouterVoiture(voiture){
 export function SupprimerVoiture(indexVoiture , nombresVoiture){
   voitures.splice(indexVoiture , nombresVoiture) ;
 }
+export function ModifierVoiture(){
+
+}
