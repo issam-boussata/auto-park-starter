@@ -93,8 +93,12 @@ function Afficher(voitures) {
 
     const liste_voitures = document.getElementById("liste-voitures");
     liste_voitures.innerHTML = "";
+    const etat_vide = document.getElementById("etat-vide");
+
 
     if (voitures.length != 0) {
+
+        etat_vide.setAttribute("hidden", "")
 
         voitures.forEach(voiture => {
 
@@ -106,7 +110,7 @@ function Afficher(voitures) {
         });
 
     } else {
-        const etat_vide = document.getElementById("etat-vide");
+
         etat_vide.removeAttribute("hidden")
     }
 }
@@ -115,7 +119,7 @@ Afficher(voitures);
 
 //=====================Ajouter================
 // une fonction pour retourne les les inputs de html en javascript
-function getInputsHtmlForm() {
+function getInputsHtml() {
     const formulaire_voiture = document.getElementById("formulaire-voiture");
     const marque_input = document.getElementById("marque");
     const modele_input = document.getElementById("modele");
@@ -127,6 +131,7 @@ function getInputsHtmlForm() {
     const annuler_modification = document.getElementById("annuler-modification");
     const bouton_modifier = document.getElementById("bouton-modifier");
 
+    // get les elements des errors
     const erreur_marque = document.getElementById("erreur-marque");
     const erreur_modele = document.getElementById("erreur-modele");
     const aide_immatriculation = document.getElementById("aide-immatriculation");
@@ -135,6 +140,14 @@ function getInputsHtmlForm() {
     const erreur_prix_jour = document.getElementById("erreur-prix-jour");
     const erreur_statut = document.getElementById("erreur-statut");
     const message_formulaire = document.getElementById("message-formulaire");
+
+    // get les elements de rechercher et trie et reinitialiser
+    const reinitialiser_filtres = document.getElementById("reinitialiser-filtres");
+    const tri_prix = document.getElementById("tri-prix");
+    const filtre_categorie = document.getElementById("filtre-categorie");
+    const filtre_statut = document.getElementById("filtre-statut");
+    const recherche = document.getElementById("recherche");
+
     return {
         formulaire_voiture: formulaire_voiture,
         marque_input: marque_input,
@@ -153,7 +166,13 @@ function getInputsHtmlForm() {
         aide_immatriculation: aide_immatriculation,
         erreur_modele: erreur_modele,
         erreur_marque: erreur_marque,
-        message_formulaire: message_formulaire
+        message_formulaire: message_formulaire,
+        recherche: recherche,
+        filtre_statut: filtre_statut,
+        filtre_categorie: filtre_categorie,
+        tri_prix: tri_prix,
+        reinitialiser_filtres: reinitialiser_filtres
+
     }
 }
 
@@ -176,8 +195,13 @@ const {
     erreur_categorie,
     erreur_prix_jour,
     erreur_statut,
-    message_formulaire
-} = getInputsHtmlForm();
+    message_formulaire,
+    reinitialiser_filtres,
+    tri_prix,
+    filtre_categorie,
+    filtre_statut,
+    recherche
+} = getInputsHtml();
 const listeInputs = document.querySelectorAll("#marque", "#modele", "#immatriculation", "#categorie", "#prix-jour", "#statut")
 
 // une fonction pour initialiser les champs
@@ -209,7 +233,7 @@ function RemplirCamps(voiture) {
 
 // une fonction pour creer et ajouter la nouvelle voiture
 function Ajouter() {
-    if(confirm("voulez vous ajouter cette voiture")){
+    if (confirm("voulez vous ajouter cette voiture")) {
 
         const voiture = {
             id: voitures.length + 1,
@@ -220,7 +244,7 @@ function Ajouter() {
             prixJour: prix_jour_input.value,
             statut: statut_input.value
         }
-    
+
         ajouterVoiture(voiture);
         Afficher(voitures);
         message_formulaire.textContent = "le voiture est ajouter aves sacces ."
@@ -229,7 +253,7 @@ function Ajouter() {
         }, 3000);
         Initial_champs();
 
-    } ;
+    };
 }
 
 // une fonction pour valide les champs est afficher les error si exist avant d'ajouter ou modifier
@@ -365,3 +389,97 @@ annuler_modification.addEventListener("click", () => {
     voiture_modifier_encour = null;
 
 })
+
+
+
+//=====================Recherche================
+
+
+let voituresFilter = voitures;
+
+// une fonction pour rechercher ds voture par marque , model , martricule ... , et filtrer par categorie et status 
+
+function  Rechercher_filtrer(){
+
+    let voituresFilter = voitures.filter(v =>
+    
+       ( v.marque.trim().toLowerCase().includes(recherche.value.trim().toLowerCase())
+        ||
+        v.modele.trim().toLowerCase().includes(recherche.value.trim().toLowerCase())
+        ||
+        v.immatriculation.trim().toLowerCase().includes(recherche.value.trim().toLowerCase())
+        ||
+        Number(v.prixJour)===Number(recherche.value))
+        &&
+        (filtre_categorie.value.trim() === ""
+        ||
+        v.categorie.trim().toLowerCase() === filtre_categorie.value.trim().toLowerCase())
+        &&
+        (filtre_statut.value.trim() === ""
+        ||
+        v.statut.trim().toLowerCase() === filtre_statut.value.trim().toLowerCase())
+
+    )
+    
+    Afficher(voituresFilter)
+
+    return voituresFilter ;
+}
+
+recherche.addEventListener("input", () => {
+    Rechercher_filtrer() ;
+})
+filtre_categorie.addEventListener("change" , ()=>{
+    Rechercher_filtrer() ;
+})
+filtre_statut.addEventListener("change" , ()=>{
+    Rechercher_filtrer() ;
+})
+
+// trie les voitures par prix en croisant et decroisant 
+function TriePrix(){
+
+    voituresFilter = Rechercher_filtrer() ;
+    let voitresTriePrix = [] ;
+
+    if (tri_prix.value.trim().toLowerCase() === "croissant") {
+        
+        voitresTriePrix = voituresFilter.sort((a,b)=> a.prixJour - b.prixJour) ;
+        console.log(voitresTriePrix);
+        
+        Afficher(voitresTriePrix)  ;
+        return ;
+    }else if(tri_prix.value.trim().toLowerCase() === "decroissant"){
+        
+        voitresTriePrix = voituresFilter.sort((a,b)=> b.prixJour - a.prixJour) ;
+        Afficher(voitresTriePrix)  ;
+        return ;
+    }else{
+
+        Afficher(voituresFilter)  ;
+
+    }
+}
+
+tri_prix.addEventListener("change" , ()=>{ TriePrix()})
+
+reinitialiser_filtres.addEventListener("click" , ()=> {
+    recherche.value = "" ;
+    filtre_categorie.value = "" ;
+    filtre_statut.value = "" ;
+    tri_prix.value = "" ;
+
+    Rechercher_filtrer() ;
+    TriePrix()
+
+})
+
+
+// const inputFilter = document.querySelectorAll()
+
+// filtre_categorie.addEventListener("change" , ()=>{
+//     voituresFilter = voituresFilter.filter(v => v.categorie.trim().toLowerCase() === filtre_categorie.value.trim().toLowerCase()) ;
+//     // Afficher(voituresFilter) ;
+//     console.log(voituresFilter);
+    
+// })
