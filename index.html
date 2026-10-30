@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- // tailwind css -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- // style css pour header -->
+    <link rel="stylesheet" href="css/style.css" />
+
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-content">
+            <a class="brand" href="voitures.html" aria-label="AutoPark — Gestion du parc">
+                <span class="brand-mark" aria-hidden="true">A<span>.</span></span>
+                <span>AutoPark<small>ATLAS AUTO</small></span>
+            </a>
+            <nav aria-label="Navigation principale">
+                <!-- index.html est le dashboard à créer par l'apprenant. -->
+                <a href="index.html">Dashboard</a>
+                <a href="voitures.html" aria-current="page">Gestion du parc</a>
+            </nav>
+            <span class="agency-label">Agence de location</span>
+        </div>
+    </header>
+    <main>
+        <section class="flex justify-between mx-auto my-[30px] lg:w-[90vw] items-center w-[85vw]">
+            <div>
+                <h1 class="font-bold">Tableau du Bord</h1>
+                <p>Vue d’ensemble de votre parc automobile</p>
+            </div>
+            <a class="bg-blue-600 p-[16px] rounded-md text-white" href="voitures.html">
+                + Ajouter voiture
+            </a>
+        </section>
+        <section class="grid grid-cols-1 gap-5 w-[90vw] mx-auto my-10 md:grid-cols-2 lg:grid-cols-4">
+            <article class="bg-[#FFFFFF]  rounded-md ">
+                <i class="fa-solid fa-table-cells-large"></i>
+                <div>
+                    <h3>Total</h3>
+                    <strong id="total"></strong>
+                </div>
+            </article>
+            <article class="bg-[#FFFFFF]  rounded-md ">
+                <i class="fa-solid fa-circle-check"></i>
+                <div>
+                    <h3>Disponibles</h3>
+                    <strong id="Disponibles"></strong>
+                </div>
+            </article>
+            <article class="bg-[#FFFFFF]  rounded-md ">
+                <i class="fa-solid fa-key"></i>
+                <div>
+                    <h3>Louées</h3>
+                    <strong id="Louées"></strong>
+                </div>
+            </article>
+            <article class="bg-[#FFFFFF]  rounded-md ">
+                <i class="fa-solid fa-wrench"></i>
+                <div>
+                    <h3>En maintenance</h3>
+                    <strong id="En_maintenance"></strong>
+                </div>
+            </article>
+        </section>
+        <section class=" grid grid-cols-1 lg:grid-cols-5 gap-5  w-[90vw] mx-auto">
+            <div class=" lg:col-span-3 bg-[#FFFFFF] rounded-md">
+                <div>
+                    <h2 class="font-bold">Aperçu du parc</h2>
+                    <a href="voitures.html">Voir tout le parc →</a>
+                </div>
+                <table>
+                    <caption class="sr-only">
+                        Liste des voitures du parc
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Marque</th>
+                            <th scope="col">Modèle</th>
+                            <th scope="col">Immatriculation</th>
+                            <th scope="col">Catégorie</th>
+                            <th scope="col">Prix / jour</th>
+                            <th scope="col">Statut</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="liste-voitures">
+
+                    </tbody>
+                </table>
+
+                <div id="etat-vide" class="empty-state" hidden>
+                    <h3>Aucune voiture à afficher</h3>
+                    <p id="texte-etat-vide">
+                        Ajoutez une voiture ou modifiez vos critères de recherche.
+                    </p>
+                </div>
+            </div>
+            <div class=" grid grid-cols-2 gap-5 col-span-1 bg-red-300 lg:grid-cols-1 lg:col-span-2">
+                <div class="bg-[#FFFFFF] col-span-1 rounded-md">
+                    <h2 class="font-bold">Répartition par statut</h2>
+                    <div id="status_graphique" class="w-[90%] flex justify-between mx-auto h-100   rounded-md bg-red-300">
+                        <p id="Disponible_graphique" class=" h-3 rounded-md bg-green-600" >1</p>
+                        <p id="Louée_graphique" class="h-3 rounded-md bg-blue-400" >2</p>
+                        <p id="En_maintenance_graphique" class="h-3 rounded-md bg-orange-400" >3</p>
+                    </div>
+                    <div id="container_status">
+                        
+                    </div>
+                     <!-- <div >
+                        <p class="badge badge-disponible">Disponible</p>
+                        <p id="Disponible_p"></p>
+                     </div>
+                     <div >
+                        <p class="badge-louee badge">louée</p>
+                        <p id="Louée_p"></p>
+                     </div>
+                     <div >
+                        <p class="badge badge-maintenance">maintenance</p>
+                        <p id="En_maintenance_p"></p>
+                     </div> -->
+                    
+                </div>
+                <div id="container" class="bg-[#FFFFFF] col-span-1 rounded-md">
+                    <h2 class="font-bold">
+                        Par catégorie
+                    </h2>
+                    <!-- <div>
+                        <div>
+                            <p id="categorie_max1"></p>
+                            <p id="N_categorie_max1"></p>
+                        </div>
+                        <div class="h-3 w-[90%] mx-auto rounded-md bg-slate-300">
+                            <p id="graphique_categorie_max1"  class="bg-blue-900 w-[50%] rounded-md h-3"></p>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <p id="categorie_max2"></p>
+                            <p id="N_categorie_max2"></p>
+                        </div>
+                        <div class="h-3 w-[90%] mx-auto rounded-md bg-slate-300">
+                            <p id="graphique_categorie_max1"  class="bg-blue-900 w-[50%] rounded-md h-3"></p>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <p id="categorie_max3"></p>
+                            <p id="N_categorie_max3"></p>
+                        </div>
+                        <div class="h-3 w-[90%] mx-auto rounded-md bg-slate-300">
+                            <p id="graphique_categorie_max1"  class="bg-blue-900 w-[50%] rounded-md h-3"></p>
+                        </div>
+                    </div>-->
+                </div> 
+            </div>
+        </section>
+    </main>
+
+
+
+    <script type="module" src="js/dashboard.js"></script>
+
+</body>
+
+</html>

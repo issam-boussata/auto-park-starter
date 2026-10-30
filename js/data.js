@@ -54,6 +54,15 @@ export const voitures = [
     "categorie": "SUV",
     "prixJour": 450,
     "statut": "Disponible"
+  },
+    {
+    "id": 7,
+    "marque": "qqqqq",
+    "modele": "Sandero",
+    "immatriculation": "AUTO-001",
+    "categorie": "SUV",
+    "prixJour": 250,
+    "statut": "Disponible"
   }
 ];
 
@@ -67,3 +76,5 @@ export function SupprimerVoiture(indexVoiture , nombresVoiture){
 export function ModifierVoiture(){
 
 }
+
+

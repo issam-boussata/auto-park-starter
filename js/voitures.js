@@ -1,4 +1,4 @@
-import { voitures, ajouterVoiture, SupprimerVoiture, ModifierVoiture } from './data.js';
+import { voitures, ajouterVoiture, SupprimerVoiture } from './data.js';
 
 //=====================Afficher================
 // une fonction pour creer les élements html pour afficher un voiture
