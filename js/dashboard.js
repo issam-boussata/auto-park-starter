@@ -1,5 +1,8 @@
-import { voitures } from './data.js';
-
+// dashboard.js
+function getVoitures(){
+    const data_voitures = localStorage.getItem("voitures") ;
+    return JSON.parse(data_voitures) ;
+}
 
 function creer_tr_voiture(liste_voitures, voiture) {
     // creer les élements html pour afficher les voiture sur tableau
@@ -58,10 +61,11 @@ function remplir_info(voiture, elements) {
 
 }
 
-console.log(voitures);
+console.log(getVoitures());
 
 // une fonction pour afficher les voitures sur un tableau html daynamiquement
-function Afficher(voitures) {
+function Afficher(Voitures) {
+    let voitures = Voitures ;
 
     const liste_voitures = document.getElementById("liste-voitures");
     liste_voitures.innerHTML = "";
@@ -72,34 +76,35 @@ function Afficher(voitures) {
 
         etat_vide.setAttribute("hidden", "")
 
-        voitures.forEach(voiture => {
+        for( let i=0 ; i <= 4 ; i++ ) {
 
             // creer les élements html et les retourne par un objet elements_tr
-            const elements_tr = creer_tr_voiture(liste_voitures, voiture);
+            const elements_tr = creer_tr_voiture(liste_voitures, voitures[i]);
 
             // remplire tr par des informations du voiture
-            remplir_info(voiture, elements_tr);
-        });
+            remplir_info(voitures[i], elements_tr);
+        };
 
     } else {
 
         etat_vide.removeAttribute("hidden")
     }
 }
-Afficher(voitures);
+Afficher(getVoitures());
 
 
 // les elements des cartes des statistique
 const total_voitures = document.getElementById("total");
-total_voitures.textContent = voitures.length;
+total_voitures.textContent = getVoitures().length;
 const Disponibles = document.getElementById("Disponibles");
 const Louées = document.getElementById("Louées");
 const En_maintenance = document.getElementById("En_maintenance");
 
+
 // remplire les cartes des statistique
-const V_disponible = voitures.filter(v => v.statut.trim().toLowerCase() === "Disponible".toLowerCase());
-const V_louiees = voitures.filter(v => v.statut.trim().toLowerCase() === "Louée".toLowerCase());
-const V_enMaintenance = voitures.filter(v => v.statut.trim().toLowerCase() === "En maintenance".toLowerCase());
+const V_disponible = getVoitures().filter(v => v.statut.trim().toLowerCase() === "Disponible".toLowerCase());
+const V_louiees = getVoitures().filter(v => v.statut.trim().toLowerCase() === "Louée".toLowerCase());
+const V_enMaintenance = getVoitures().filter(v => v.statut.trim().toLowerCase() === "En maintenance".toLowerCase());
 
 const N_V_disponible = V_disponible.length;
 const N_V_louiees = V_louiees.length;
@@ -114,17 +119,11 @@ En_maintenance.textContent = N_V_enMaintenance;
 // le porcentage des voiture en chaque status
 
 
-
-const Disponible_p = document.getElementById("Disponible_p");
-const Louée_p = document.getElementById("Louée_p");
-const En_maintenance_p = document.getElementById("En_maintenance_p");
-
-
-
-
 function statistiqueStatus() {
 
+    const nombres_voitures = getVoitures().length ;
     const container_status = document.getElementById("container_status");
+    const status_graphique = document.getElementById("status_graphique");
     let tableau_status_trie = [V_disponible, V_louiees, V_enMaintenance];
 
     console.log(tableau_status_trie);
@@ -135,53 +134,57 @@ function statistiqueStatus() {
             const Disponible_div = document.createElement("div");
             const Disponible_p_num = document.createElement("p");
             const Disponible_p_nom = document.createElement("p");
-            // const Louée_p = document.createElement("p") ;
-            // const En_maintenance_p = document.createElement("p") ;
+            const Disponible_graphique = document.createElement("p");
+
             Disponible_p_nom.textContent = "Disponible";
-            Disponible_p_num.textContent = ((N_V_disponible * 100) / voitures.length).toFixed(1) + " %";
+            Disponible_p_num.textContent = ((N_V_disponible * 100) / nombres_voitures).toFixed(1) + " %";
             Disponible_div.append(Disponible_p_nom, Disponible_p_num);
             container_status.append(Disponible_div);
+            status_graphique.append(Disponible_graphique);
 
 
-            Disponible_p_nom.className = "badge badge-disponible"
+            Disponible_div.className = "flex justify-between my-4"
+            Disponible_p_nom.className = "badge badge-disponible";
+            Disponible_graphique.className = `w-[${(t_status.length * 100) / nombres_voitures}%]  h-3  bg-green-400`;
 
         }
         if (t_status[0].statut === "Louée") {
             const Louée_div = document.createElement("div");
             const Louée_p_num = document.createElement("p");
             const Louée_p_nom = document.createElement("p");
-            // const Louée_p = document.createElement("p") ;
-            // const En_maintenance_p = document.createElement("p") ;
-            Louée_p_nom.textContent = "Disponible";
-            Louée_p_num.textContent = ((N_V_louiees * 100) / voitures.length).toFixed(1) + " %";
+            const Louée_graphique = document.createElement("p");
+
+            Louée_p_nom.textContent = "Louée";
+            Louée_p_num.textContent = ((N_V_louiees * 100) / nombres_voitures).toFixed(1) + " %";
             Louée_div.append(Louée_p_nom, Louée_p_num);
             container_status.append(Louée_div);
+            status_graphique.append(Louée_graphique);
 
-
-            Louée_p_nom.className = "badge-louee badge" ;
+            Louée_div.className = "flex justify-between my-4"
+            Louée_p_nom.className = "badge-louee badge";
+            Louée_graphique.className = `w-[${(t_status.length * 100) / nombres_voitures}%] h-3  bg-blue-400`;
 
         }
         if (t_status[0].statut === "En maintenance") {
             const En_maintenance_div = document.createElement("div");
             const En_maintenance_p_num = document.createElement("p");
             const En_maintenance_p_nom = document.createElement("p");
-            // const Louée_p = document.createElement("p") ;
-            // const En_maintenance_p = document.createElement("p") ;
-            En_maintenance_p_nom.textContent = "Disponible";
-            En_maintenance_p_num.textContent = ((N_V_enMaintenance * 100) / voitures.length).toFixed(1) + " %";
+            const En_maintenance_graphique = document.createElement("p");
+
+
+            En_maintenance_p_nom.textContent = "En maintenance";
+            En_maintenance_p_num.textContent = ((N_V_enMaintenance * 100) / nombres_voitures).toFixed(1) + " %";
             En_maintenance_div.append(En_maintenance_p_nom, En_maintenance_p_num);
             container_status.append(En_maintenance_div);
+            status_graphique.append(En_maintenance_graphique);
 
-            En_maintenance_p_nom.className = "badge badge-maintenance" ;
+            En_maintenance_div.className = "flex justify-between my-4"
+            En_maintenance_p_nom.className = "badge badge-maintenance";
+            En_maintenance_graphique.className = `w-[${(t_status.length * 100) /nombres_voitures}%] h-3 bg-orange-400`;
 
         }
 
-        console.log(t_status[0].statut);
-
     })
-
-
-
 }
 statistiqueStatus();
 
@@ -189,6 +192,7 @@ statistiqueStatus();
 // le pourcentage des voiture pour chaque categorie
 function statistiqueCategorie() {
 
+    let voitures = getVoitures() ;
 
     let tableauCategorie = [];
     voitures.forEach(v => {
