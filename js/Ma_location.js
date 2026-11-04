@@ -1,43 +1,7 @@
-/*
- * AutoPark â€” Partie 2 : Composez votre location
- * Starter JavaScript â€” Ã  complÃ©ter par les apprenants.
- * Charger ce fichier dans votre HTML avec l'attribut defer.
- *
- * Parcours : vÃ©hicule et dates â†’ rÃ©cupÃ©ration â†’ options â†’ rÃ©capitulatif.
- * Les tarifs sont exprimÃ©s en MAD.
- */
+const voitures = getVoitures() ;
 
-// 1. CONFIGURATION : les donnÃ©es proposÃ©es par l'agence.
 const config = {
-    voitures: [
-        {
-            id: 1,
-            marque: "Dacia",
-            modele: "Sandero",
-            immatriculation: "AUTO-001",
-            categorie: "Citadine",
-            prixJour: 250,
-            statut: "Disponible",
-        },
-        {
-            id: 2,
-            marque: "Renault",
-            modele: "Clio",
-            immatriculation: "AUTO-002",
-            categorie: "Citadine",
-            prixJour: 300,
-            statut: "Disponible",
-        },
-        {
-            id: 3,
-            marque: "Dacia",
-            modele: "Duster",
-            immatriculation: "AUTO-003",
-            categorie: "SUV",
-            prixJour: 450,
-            statut: "Disponible",
-        },
-    ],
+    voitures: voitures , 
 
     modesRecuperation: [
         { id: "agence", nom: "Ã€ lâ€™agence", fraisFixes: 0 },
@@ -59,16 +23,14 @@ const config = {
     ],
 };
 
-// 2. SÃ‰LECTION : les choix de l'utilisateur, Ã  actualiser avec les formulaires.
-// Les identifiants correspondent aux id dÃ©finis dans config.
-// Les dates seront des chaÃ®nes au format AAAA-MM-JJ (valeur d'un input date).
 const selectedConfig = {
     etape: 1,
     voitureId: null,
     dateDebut: "",
     dateFin: "",
-    modeRecuperation: "agence",
+    nbrJour: 0,
 
+    modeRecuperation: "agence",
     recuperation: {
         // Mode agence uniquement.
         heureRecuperation: "",
@@ -89,33 +51,123 @@ const selectedConfig = {
         conducteurSupplementaire: false,
     },
 };
+function setConfig_local(){
+    localStorage.setItem("config" , JSON.stringify(config))
+}
+function getConfig_local(){
+    const config = localStorage.getItem("config") ;
+    return JSON.parse(config) ;
+}
 
-/*
- * 3. Ã€ VOUS DE JOUER
- *
- * 1) SÃ©lectionner vos Ã©lÃ©ments HTML et afficher les voitures depuis config.
- * 2) Ã‰couter les Ã©vÃ©nements et mettre Ã  jour selectedConfig.
- *    Attention : la valeur d'un select est une chaÃ®ne ; voitureId est un nombre.
- *    Pour une case Ã  cocher, utiliser checked pour rÃ©cupÃ©rer true ou false.
- * 3) GÃ©rer les boutons PrÃ©cÃ©dent / Suivant et afficher une seule Ã©tape.
- * 4) Afficher les champs du mode de rÃ©cupÃ©ration sÃ©lectionnÃ©.
- *    Masquer et dÃ©sactiver les autres ; adapter required.
- * 5) Valider l'Ã©tape courante avant de passer Ã  la suivante.
- * 6) Calculer et actualiser le prix quand les choix changent.
- * 7) Afficher le rÃ©capitulatif des seuls champs concernÃ©s, puis confirmer.
- * 8) Permettre de recommencer avec les valeurs initiales.
- *
- * RÃˆGLES DU PRIX
- * - Les deux dates sont incluses : du 10 au 12 = 3 jours.
- * - Une location sur une mÃªme date = 1 jour.
- * - Le dÃ©but ne peut pas Ãªtre passÃ© ; la fin ne peut pas prÃ©cÃ©der le dÃ©but.
- * - Total = jours Ã— (prixParJour de la voiture + options par jour)
- *           + fraisFixes du mode de rÃ©cupÃ©ration.
- * - Les frais de rÃ©cupÃ©ration sont ajoutÃ©s une seule fois.
- * - Aucun renseignement supplÃ©mentaire pour le conducteur.
- * - Ne pas afficher un total numÃ©rique tant que la voiture ou les dates
- *   sont manquantes ou invalides.
- *
- * Exemple de contrÃ´le : Sandero, du 10 au 12, siÃ¨ge bÃ©bÃ©, aÃ©roport
- * â†’ 3 Ã— (250 + 30) + 150 = 990 MAD.
- */
+function setSelectedConfig(){
+    localStorage.setItem("selectedConfig" ,JSON.stringify(selectedConfig)) ;
+}
+function getSelectedConfig() {
+    const selectedConfig = localStorage.getItem("selectedConfig") ;
+    return JSON.parse(selectedConfig) ;
+}
+
+
+
+
+function getVoitures() {
+    const voitures = localStorage.getItem("voitures");
+    return JSON.parse(voitures);
+}
+
+// ================ Véhicule ================
+// afficher le véhicule 
+function AfficherVéhicule() {
+
+    const listes_voitures = document.getElementById("listes_voitures");
+    const input_date_debut = document.getElementById("date_debut");
+    let today = new Date() ;
+    let todayh = new Date().toLocaleDateString('en-CA')
+    input_date_debut.setAttribute("min" , todayh ) ;
+
+    today.setDate(new Date().getDate()+3) ;
+
+    const input_date_fin = document.getElementById("date_fin");
+    input_date_fin.setAttribute("min" , today.toLocaleDateString('en-CA')) ;
+    const veihcules_message = document.getElementById("veihcules_message");
+
+    const voitures = getVoitures().filter(v => v.statut === "Disponible");
+    voitures.forEach(voiture => {   
+        // creer les elements   
+        const container_v = document.createElement("label");
+        const div_categorie_check = document.createElement("div");
+        const label_categorie = document.createElement("p");
+        const input_check = document.createElement("input");
+        const p_nom_v = document.createElement("p");
+        const p_status_v = document.createElement("p");
+        const p_prixJour_v = document.createElement("p");
+
+        // strecturer
+        div_categorie_check.append(label_categorie, input_check);
+        container_v.append(div_categorie_check, p_nom_v, p_status_v, p_prixJour_v);
+        listes_voitures.append(container_v);
+
+        // ajouter style tailwind css
+        container_v.className = "border-2 border-[#D8E1EF] rounded-md p-3 space-y-4  has-[:checked]:bg-[#F8FAFF] has-[:checked]:border-[#2852E3]";
+        div_categorie_check.className = "flex justify-between items-center";
+        label_categorie.className = "bg-[#EEF2FF] text-[#2852E3] pr-8 py-2 pl-2";
+        input_check.type = 'radio';
+        input_check.className = "h-6 w-6 accent-blue-600 ";
+        input_check.id = "input_check";
+        input_check.name = "input-radio";
+        input_check.value = voiture.nom;
+        p_nom_v.className = "text-xl font-bold";
+        p_status_v.className = " text-[#16835C]";
+        p_prixJour_v.className = "text-[#2852E3] font-bold text-xl";
+
+        //remplir des valeurs
+        label_categorie.textContent = voiture.categorie;
+        p_nom_v.textContent = voiture.marque + " " + voiture.modele;
+        p_status_v.textContent = voiture.statut;
+        p_prixJour_v.textContent = voiture.prixJour + " MAD / jour";
+
+        // lorse que un event
+        input_check.addEventListener("checked" , ()=>{})
+
+    });
+
+}
+AfficherVéhicule();
+
+// une fonction pour afficher la cate de votre location
+function afficherVotreLocatio(){
+    const selectedConfig = getSelectedConfig() ;
+    const voitures = getVoitures() ;
+    const config = getConfig_local() ;
+
+    const voiture = voitures.find(v => v.id === selectedConfig.voitureId) ;
+    const recuperation = config.modesRecuperation.find(R => R.id === selectedConfig.modeRecuperation) ;
+    console.log(voiture);
+    console.log(recuperation);
+    console.log(voitures);
+    
+
+    const nom_voiture = document.getElementById("nom-voiture") ;
+    const prix_voiture = document.getElementById("prix-voiture") ;
+    const date_debut_fin = document.getElementById("date-debut-fin") ;
+    const nb_jour = document.getElementById("nb-jour") ;
+    const prix_fois_jour = document.getElementById("prix-fois-jour") ;
+    const prix_total = document.getElementById("prix-total") ;
+    const prix_recuperation = document.getElementById("prix-recuperation") ;
+    const prix_net = document.getElementById("prix-net") ;
+
+
+    nom_voiture.textContent = voiture.marque + " " + voiture.modele ;
+    prix_voiture.textContent = voiture.prixJour + " DH / Jour" ;
+    date_debut_fin.textContent = selectedConfig.dateDebut + "  -->  " + selectedConfig.dateFin ;
+    nb_jour.textContent = selectedConfig.nbrJour + " jours · dates incluses" ;
+    prix_fois_jour.textContent = selectedConfig.nbrJour + " * " + voiture.prixJour + " MAD " ;
+    prix_total.textContent = selectedConfig.nbrJour + voiture.prixJour  + " MAD ";
+    prix_recuperation.textContent = recuperation.fraisFixes === 0 ? "gratuit" : recuperation.fraisFixes + " MAD "
+    prix_net.textContent = (recuperation.fraisFixes + selectedConfig.nbrJour + voiture.prixJour ) + " MAD " ;
+}
+afficherVotreLocatio() ;
+
+function ValideChamps(){
+
+}

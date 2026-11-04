@@ -177,8 +177,7 @@ label {
 label span {
   color: var(--primary);
 }
-input,
-select {
+#contenu input,#contenu select  ,#main_index input,#main_index select {
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;

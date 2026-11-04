@@ -26,11 +26,12 @@
                 <!-- index.html est le dashboard à créer par l'apprenant. -->
                 <a href="index.html" aria-current="page">Dashboard</a>
                 <a href="voitures.html" >Gestion du parc</a>
+                <a href="Ma_location.html" >Ma location</a>
             </nav>
             <span class="agency-label">Agence de location</span>
         </div>
     </header>
-    <main class="px-[5vw] lg:px-[9vw]">
+    <main id="main_index" class="px-[5vw] lg:px-[9vw]">
         <section class=" mx-auto py-4 md:flex md:justify-between md:items-center ">
             <div class="my-6">
                 <h1 class="font-bold">Tableau du Bord</h1>
@@ -71,7 +72,7 @@
             </article>
         </section>
         <section class="mx-auto grid lg:grid-cols-5 lg:gap-10 ">
-            <div class="hidden md:block col-span-3  md:bg-[#FFFFFF] md:py-2">
+            <div class="hidden md:block col-span-3 h-fit md:bg-[#FFFFFF] md:py-2">
                 <div class=" flex justify-between items-center my-8 mx-[3%]">
                     <h2 class="font-bold">Aperçu du parc</h2>
                     <a href="voitures.html#table_voitures">Voir tout le parc →</a>
