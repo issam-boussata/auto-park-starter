@@ -82,14 +82,14 @@
                             <input type="date" name="date_fin" id="date_fin" class="border-2 border-[#D8E1EF]  w-[100%] h-15 rounded-md p-2">
                         </div>
                     </form>
-                    <p id="veihcules_message" class="text-[#2852E3] bg-[#EEF2FF] p-4">Durée : 3 jours. Les dates de début et de fin sont incluses.</p>
+                    <p hidden id="veihcules_message" class="text-[#2852E3] bg-[#EEF2FF] p-4"></p>
                     <hr>
                     <div class="flex justify-between">
                         <button class="py-4 w-40 border-2 rounded-md" id="Précédent" type="button">Recommancer</button>
                         <button class="py-4 w-40 rounded-md text-white bg-[#2852E3]" id="Suivant" type="button">Suivant</button>
                     </div>
                 </div>
-                <div class=" bg-[#FFFFFF] p-3 h-fit my-10 space-y-6 rounded-md lg:col-span-1">
+                <div hidden id="facture" class=" bg-[#FFFFFF] p-3 h-fit my-10 space-y-6 rounded-md lg:col-span-1">
                     <h5 class="text-blue-600">VOTRE LOCATION</h5>
                     <h2 id="nom-voiture" class="font-bold text-2xl "></h2>
                     <p id="prix-voiture" class=" text-[#697C94]"></p>
@@ -106,7 +106,7 @@
                     </div>
                     <hr>
                     <div class="flex justify-between">
-                        <p class="font-bold ">estimé</p>
+                        <p class="font-bold "> Total estimé</p>
                         <p id="prix-net" class="text-[#2852E3] font-bold text-xl"></p>
                     </div>
                     <p class=" text-[#697C94]">Frais de récupération facturés une seule fois.</p>

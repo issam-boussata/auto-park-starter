@@ -28,7 +28,7 @@ const selectedConfig = {
     voitureId: null,
     dateDebut: "",
     dateFin: "",
-    nbrJour: 0 ,
+    nbrJour: 0,
 
     modeRecuperation: "agence",
     recuperation: {
@@ -51,22 +51,23 @@ const selectedConfig = {
         conducteurSupplementaire: false,
     },
 };
+
+// sissionStorage
+function setSelectedConfig(selectedConfig) {
+    sessionStorage.setItem("selectedConfig", JSON.stringify(selectedConfig));
+}
+function getSelectedConfig() {
+    const selectedConfig = sessionStorage.getItem("selectedConfig");
+    return JSON.parse(selectedConfig);
+}
 // localStorage
-function setConfig_local() {
+function setConfig_local(config) {
     localStorage.setItem("config", JSON.stringify(config))
 }
 function getConfig_local() {
     const config = localStorage.getItem("config");
     return JSON.parse(config);
 }
-function setSelectedConfig(selectedConfig) {
-    localStorage.setItem("selectedConfig", JSON.stringify(selectedConfig));
-}
-function getSelectedConfig() {
-    const selectedConfig = localStorage.getItem("selectedConfig");
-    return JSON.parse(selectedConfig);
-}
-
 function getVoitures() {
     const voitures = localStorage.getItem("voitures");
     return JSON.parse(voitures);
@@ -78,7 +79,6 @@ function getVoitures() {
 function AfficherVéhicule() {
 
     const listes_voitures = document.getElementById("listes_voitures");
-    const veihcules_message = document.getElementById("veihcules_message");
 
     // ajouter la date minimum ou input date debut et date fin de location
     const input_date_debut = document.getElementById("date_debut");
@@ -133,6 +133,8 @@ function AfficherVéhicule() {
 
 }
 AfficherVéhicule();
+
+// valider les champs dates est ajouter les valeur(id_voiture , date debut fin)
 function validerChampsDates() {
     const input_date_debut = document.getElementById("date_debut");
     const input_date_fin = document.getElementById("date_fin");
@@ -142,30 +144,40 @@ function validerChampsDates() {
     input_date_fin.setAttribute("min", dateFin.toLocaleDateString(`en-CA`));
 
     if (input_date_fin) {
-        let date_input_fin = new Date(input_date_fin.value) ;
-        date_input_fin.setDate(date_input_fin.getDate() - 1)        
+        let date_input_fin = new Date(input_date_fin.value);
+        date_input_fin.setDate(date_input_fin.getDate() - 1)
         input_date_debut.setAttribute("max", date_input_fin.toLocaleDateString(`en-CA`));
     }
 
     if (input_date_debut.value && input_date_fin.value) {
-        const selectedConfig = getSelectedConfig() ;
+        const selectedConfig = getSelectedConfig();
         selectedConfig.dateDebut = new Date(input_date_debut.value).toLocaleDateString(`en-CA`);
-        selectedConfig.dateFin = new Date(input_date_fin.value).toLocaleDateString(`en-CA`) ;
-        let nbr_jour = (new Date(input_date_fin.value) - new Date(input_date_debut.value)) / (1000 * 60 * 60 * 24) ;         
-        selectedConfig.nbrJour = nbr_jour ;
-        setSelectedConfig(selectedConfig) ;
+        selectedConfig.dateFin = new Date(input_date_fin.value).toLocaleDateString(`en-CA`);
+        let nbr_jour = (new Date(input_date_fin.value) - new Date(input_date_debut.value)) / (1000 * 60 * 60 * 24);
+        selectedConfig.nbrJour = nbr_jour;
+        setSelectedConfig(selectedConfig);
+        afficherVotreLocation();
+
+        const veihcules_message = document.getElementById("veihcules_message");
+        veihcules_message.removeAttribute("hidden");
+        veihcules_message.textContent = ` Durée : ${nbr_jour} jours. Les dates de début et de fin sont incluses.`;
+
     }
 
 }
 
-document.getElementById("date_debut").addEventListener("input", () => {validerChampsDates()}) ;
-document.getElementById("date_fin").addEventListener("input", () => {validerChampsDates()}) ;
+document.getElementById("date_debut").addEventListener("input", () => { validerChampsDates() });
+document.getElementById("date_fin").addEventListener("input", () => { validerChampsDates() });
 const choisirVoiture = (id_voiture) => {
-    const selectedConfig = getSelectedConfig() ;
-    selectedConfig.voitureId = id_voiture ;
+    // const selectedConfig = getSelectedConfig();
+    selectedConfig.voitureId = id_voiture;
     console.log(id_voiture);
-    setSelectedConfig(selectedConfig) ;
+    setSelectedConfig(selectedConfig);
+    console.log(selectedConfig);
     
+    afficherVotreLocation();
+    document.getElementById("facture").removeAttribute("hidden");
+
 };
 
 // une fonction pour afficher la cate de votre location
@@ -188,13 +200,20 @@ function afficherVotreLocation() {
 
 
     nom_voiture.textContent = voiture.marque + " " + voiture.modele;
-    prix_voiture.textContent = voiture.prixJour + " DH / Jour";
-    date_debut_fin.textContent = selectedConfig.dateDebut + "  -->  " + selectedConfig.dateFin;
+    prix_voiture.textContent = voiture.categorie + " . " + voiture.prixJour + " DH / Jour";
+    if (new Date(selectedConfig.dateDebut).getMonth() === new Date(selectedConfig.dateFin).getMonth()) {
+        date_debut_fin.textContent = new Date(selectedConfig.dateDebut).getDate() + " → " + new Date(selectedConfig.dateFin).toLocaleDateString('fr-FR', { day: "numeric", month: "long", year: "numeric" });
+    } else {
+        date_debut_fin.textContent = new Date(selectedConfig.dateDebut).toLocaleDateString('fr-FR', { day: "numeric", month: "long" }) + " → " + new Date(selectedConfig.dateFin).toLocaleDateString('fr-FR', { day: "numeric", month: "long", year: "numeric" });
+    }
     nb_jour.textContent = selectedConfig.nbrJour + " jours · dates incluses";
-    prix_fois_jour.textContent = selectedConfig.nbrJour + " * " + voiture.prixJour + " MAD ";
-    prix_total.textContent = selectedConfig.nbrJour + voiture.prixJour + " MAD ";
-    prix_recuperation.textContent = recuperation.fraisFixes === 0 ? "gratuit" : recuperation.fraisFixes + " MAD "
-    prix_net.textContent = (recuperation.fraisFixes + selectedConfig.nbrJour + voiture.prixJour) + " MAD ";
+    prix_fois_jour.textContent = "Véhicule · " + selectedConfig.nbrJour + " * " + voiture.prixJour + " MAD ";
+    prix_total.textContent = (selectedConfig.nbrJour * voiture.prixJour) + " MAD ";
+    prix_recuperation.textContent = recuperation.fraisFixes === 0 ? "gratuit" : recuperation.fraisFixes + " MAD ";
+    console.log(recuperation.fraisFixes);
+
+    prix_net.textContent = (recuperation.fraisFixes + (selectedConfig.nbrJour * voiture.prixJour)) + " MAD ";
 }
+
 
 
