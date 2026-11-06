@@ -1,4 +1,5 @@
-// voitures.js
+import {data_voitures} from './data.js' ;
+
 function getVoitures(){
   const voitures = localStorage.getItem("voitures") ;
   return JSON.parse(voitures) ;

@@ -4,20 +4,20 @@ const config = {
     voitures: voitures,
 
     modesRecuperation: [
-        { id: "agence", nom: "Ã€ lâ€™agence", fraisFixes: 0 },
-        { id: "aeroport", nom: "Ã€ lâ€™aÃ©roport", fraisFixes: 150 },
-        { id: "adresse", nom: "Ã€ une adresse", fraisFixes: 100 },
+        { id: "agence", nom: "À l’agence", fraisFixes: 0 },
+        { id: "aeroport", nom: "À l’aéroport", fraisFixes: 150 },
+        { id: "adresse", nom: "À une adresse", fraisFixes: 100 },
     ],
 
-    agences: ["Casablanca â€” Centre-ville", "Rabat â€” Agdal", "Marrakech â€” GuÃ©liz"],
+    agences: ["Casablanca -- Centre-ville", "Rabat -- Agdal", "Marrakech -- Guaeliz"],
 
-    aeroports: ["Casablanca â€” Mohammed V", "Rabat â€” SalÃ©", "Marrakech â€” MÃ©nara"],
+    aeroports: ["Casablanca -- Mohammed V", "Rabat -- Sala", "Marrakech -- Manara"],
 
     options: [
-        { id: "siegeBebe", nom: "SiÃ¨ge bÃ©bÃ©", prixParJour: 30 },
+        { id: "siegeBebe", nom: "Siage bébé", prixParJour: 30 },
         {
             id: "conducteurSupplementaire",
-            nom: "Conducteur supplÃ©mentaire",
+            nom: "Conducteur supplémentaire",
             prixParJour: 200,
         },
     ],
@@ -75,8 +75,8 @@ function getVoitures() {
 
 // ================ Véhicule ================
 // afficher le véhicule 
-// min='2028-10-05'
 function AfficherVéhicule() {
+    document.getElementById("cinqEtapes").className ="bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-3"
 
     const listes_voitures = document.getElementById("listes_voitures");
 
@@ -174,9 +174,10 @@ const choisirVoiture = (id_voiture) => {
     console.log(id_voiture);
     setSelectedConfig(selectedConfig);
     console.log(selectedConfig);
-    
+
     afficherVotreLocation();
     document.getElementById("facture").removeAttribute("hidden");
+    document.getElementById("cinqEtapes").className ="bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-2"
 
 };
 
@@ -216,4 +217,56 @@ function afficherVotreLocation() {
 }
 
 
+// ================ RÉCUPÉRATION ================
+
+function AfficherRepuration(){
+    const config = getConfig_local() ;
+    const listes_modesRecuperation = document.getElementById("listes_modesRecuperation") ;
+
+    config.modesRecuperation.forEach( modeRecuperation => {
+        const container = document.createElement("label") ;
+        const  nom = document.createElement("h2") ;
+        const prix = document.createElement("p") ;
+        const input_radio = document.createElement("input") ;
+        
+        container.className = "border-2 border-[#D8E1EF] rounded-md p-3 space-y-4  has-[:checked]:bg-[#F8FAFF] has-[:checked]:border-[#2852E3]" ;
+        input_radio.type = "radio" ;
+        input_radio.name = "input_radio" ;
+        input_radio.addEventListener("click" , ()=>{choisModeRecuperation(modeRecuperation.id)});
+        nom.className = "text-xl font-bold" ;
+        prix.className = "text-blue-600"
+
+
+        container.append( input_radio , nom , prix) ;
+        listes_modesRecuperation.append(container) ;
+
+
+
+        nom.textContent = modeRecuperation.nom ;
+        prix.textContent = modeRecuperation.fraisFixes === 0 ? "gratuit" : "+ "+modeRecuperation.fraisFixes + " DH" ;
+
+    })
+}
+AfficherRepuration() ;
+
+function afficherForm(id) {
+    if (id==="agence") {
+        document.getElementById("agence_form").removeAttribute("hidden") ;
+        document.getElementById("aeroport_form").setAttribute("hidden" , "")
+        document.getElementById("adresse_form").setAttribute("hidden" , "")
+        
+        
+    }else if(id === "aeroport"){
+        document.getElementById("aeroport_form").removeAttribute("hidden")
+        document.getElementById("agence_form").setAttribute("hidden" , "") ;
+        document.getElementById("adresse_form").setAttribute("hidden" , "")
+        
+    }else{
+        document.getElementById("adresse_form").removeAttribute("hidden")
+        document.getElementById("aeroport_form").setAttribute("hidden" , "")
+        document.getElementById("agence_form").setAttribute("hidden" , "") ;
+
+    }
+        
+}
 
