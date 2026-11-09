@@ -320,3 +320,88 @@ function ValiderChampsOptions(id) {
     setSelectedConfig(selected_Config)
 }
 
+
+// une fonction pour afficher la cate de votre location
+function afficherVotreLocation() {
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    const Voitures = getVoitures() || voitures;
+    const Config = getConfig_local() || config;
+
+    let options_prix = 0;
+
+    const voiture = Voitures.find(v => v.id === selected_Config.voitureId);
+    const recuperation = Config.modesRecuperation.find(R => R.id === selected_Config.modeRecuperation);
+
+    const nom_voiture = document.getElementById("nom-voiture");
+    const prix_voiture = document.getElementById("prix-voiture");
+    const date_debut_fin = document.getElementById("date-debut-fin");
+    const nb_jour = document.getElementById("nb-jour");
+    const prix_fois_jour = document.getElementById("prix-fois-jour");
+    const prix_total = document.getElementById("prix-total");
+    const prix_recuperation = document.getElementById("prix-recuperation");
+    const prix_net = document.getElementById("prix-net");
+    const div_siegeBebe = document.getElementById("div-siegeBebe");
+    const siegeBebe = document.getElementById("siegeBebe");
+    const prix_siegeBebe = document.getElementById("prix-siegeBebe");
+    const div_conducteurSupplementaire = document.getElementById("div-conducteurSupplementaire");
+    const conducteurSupplementaire = document.getElementById("conducteurSupplementaire");
+    const prix_conducteurSupplementaire = document.getElementById("prix-conducteurSupplementaire");
+
+
+    nom_voiture.textContent = voiture.marque + " " + voiture.modele;
+    prix_voiture.textContent = voiture.categorie + " . " + voiture.prixJour + " DH / Jour";
+    if (new Date(selected_Config.dateDebut).getMonth() === new Date(selected_Config.dateFin).getMonth()) {
+        date_debut_fin.textContent = new Date(selected_Config.dateDebut).getDate() + " → " + new Date(selected_Config.dateFin).toLocaleDateString('fr-FR', { day: "numeric", month: "long", year: "numeric" });
+    } else {
+        date_debut_fin.textContent = new Date(selected_Config.dateDebut).toLocaleDateString('fr-FR', { day: "numeric", month: "long" }) + " → " + new Date(selected_Config.dateFin).toLocaleDateString('fr-FR', { day: "numeric", month: "long", year: "numeric" });
+    }
+    nb_jour.textContent = selected_Config.nbrJour + " jours · dates incluses";
+    prix_fois_jour.textContent = "Véhicule · " + selected_Config.nbrJour + " * " + voiture.prixJour + " MAD ";
+    prix_total.textContent = (selected_Config.nbrJour * voiture.prixJour) + " MAD ";
+
+    if (selected_Config.options.siegeBebe) {
+        const option = Config.options.find(op => op.id === "siegeBebe");
+        div_siegeBebe.removeAttribute("hidden");
+        siegeBebe.textContent = option.nom + " . " + selected_Config.nbrJour + " * " + option.prixParJour + " MAD ";
+        prix_siegeBebe.textContent = (selected_Config.nbrJour * option.prixParJour) + " MAD ";
+        options_prix += selected_Config.nbrJour * option.prixParJour;
+    }
+    if (selected_Config.options.conducteurSupplementaire) {
+        const option = Config.options.find(op => op.id === "conducteurSupplementaire");
+        div_conducteurSupplementaire.removeAttribute("hidden");
+        conducteurSupplementaire.textContent = option.nom + " . " + selected_Config.nbrJour + " * " + option.prixParJour + " MAD ";
+        prix_conducteurSupplementaire.textContent = (selected_Config.nbrJour * option.prixParJour) + " MAD ";
+        options_prix += selected_Config.nbrJour * option.prixParJour;
+    }
+    prix_recuperation.textContent = recuperation.fraisFixes === 0 ? "gratuit" : recuperation.fraisFixes + " MAD ";
+
+    prix_net.textContent = (recuperation.fraisFixes + (selected_Config.nbrJour * voiture.prixJour) + options_prix) + " MAD ";
+}
+afficherVotreLocation();
+function AfficherSteape() {
+    let numSteap = getSelectedConfig().etape || selectedConfig.etape;
+
+    if (numSteap === 1) {
+        AfficherVéhicule()
+    }
+     else if (numSteap === 2) {
+        AfficherRepuration();
+    } 
+    else{
+        AfficherOptions()
+    }
+
+}
+AfficherSteape()
+document.getElementById("Précédent").addEventListener("click" , ()=>{
+    const selected_Config = getSelectedConfig() || selectedConfig ;
+    selected_Config.etape -- ;
+    setSelectedConfig(selected_Config) ;
+    AfficherSteape() ;
+})
+document.getElementById("Suivant").addEventListener("click" , ()=>{
+    const selected_Config = getSelectedConfig() || selectedConfig ;
+    selected_Config.etape ++ ;
+    setSelectedConfig(selected_Config) ;
+    AfficherSteape() ;
+})
