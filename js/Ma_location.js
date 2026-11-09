@@ -1,5 +1,5 @@
 import { data_voitures , config , selectedConfig } from './data.js';
-const voitures = getVoitures() || data_voitures;
+// const voitures = getVoitures() || data_voitures;
 
 
 // sissionStorage
@@ -324,7 +324,7 @@ function ValiderChampsOptions(id) {
 // une fonction pour afficher la cate de votre location
 function afficherVotreLocation() {
     const selected_Config = getSelectedConfig() || selectedConfig;
-    const Voitures = getVoitures() || voitures;
+    const Voitures = getVoitures() || data_voitures;
     const Config = getConfig_local() || config;
 
     let options_prix = 0;

@@ -1,8 +1,11 @@
-// dashboard.js
+import { data_voitures } from './data.js';
+
 function getVoitures(){
     const data_voitures = localStorage.getItem("voitures") ;
     return JSON.parse(data_voitures) ;
 }
+
+const voitures_data = getVoitures() || data_voitures ;
 
 function creer_tr_voiture(liste_voitures, voiture) {
     // creer les élements html pour afficher les voiture sur tableau
@@ -61,7 +64,7 @@ function remplir_info(voiture, elements) {
 
 }
 
-console.log(getVoitures());
+console.log(voitures_data);
 
 // une fonction pour afficher les voitures sur un tableau html daynamiquement
 function Afficher(Voitures) {
@@ -90,21 +93,21 @@ function Afficher(Voitures) {
         etat_vide.removeAttribute("hidden")
     }
 }
-Afficher(getVoitures());
+Afficher(voitures_data);
 
 
 // les elements des cartes des statistique
 const total_voitures = document.getElementById("total");
-total_voitures.textContent = getVoitures().length;
+total_voitures.textContent = voitures_data.length;
 const Disponibles = document.getElementById("Disponibles");
 const Louées = document.getElementById("Louées");
 const En_maintenance = document.getElementById("En_maintenance");
 
 
 // remplire les cartes des statistique
-const V_disponible = getVoitures().filter(v => v.statut.trim().toLowerCase() === "Disponible".toLowerCase());
-const V_louiees = getVoitures().filter(v => v.statut.trim().toLowerCase() === "Louée".toLowerCase());
-const V_enMaintenance = getVoitures().filter(v => v.statut.trim().toLowerCase() === "En maintenance".toLowerCase());
+const V_disponible = voitures_data.filter(v => v.statut.trim().toLowerCase() === "Disponible".toLowerCase());
+const V_louiees = voitures_data.filter(v => v.statut.trim().toLowerCase() === "Louée".toLowerCase());
+const V_enMaintenance = voitures_data.filter(v => v.statut.trim().toLowerCase() === "En maintenance".toLowerCase());
 
 const N_V_disponible = V_disponible.length;
 const N_V_louiees = V_louiees.length;
@@ -121,7 +124,7 @@ En_maintenance.textContent = N_V_enMaintenance;
 
 function statistiqueStatus() {
 
-    const nombres_voitures = getVoitures().length ;
+    const nombres_voitures = voitures_data.length ;
     const container_status = document.getElementById("container_status");
     const status_graphique = document.getElementById("status_graphique");
     let tableau_status_trie = [V_disponible, V_louiees, V_enMaintenance];
@@ -192,7 +195,7 @@ statistiqueStatus();
 // le pourcentage des voiture pour chaque categorie
 function statistiqueCategorie() {
 
-    let voitures = getVoitures() ;
+    let voitures = voitures_data ;
 
     let tableauCategorie = [];
     voitures.forEach(v => {
