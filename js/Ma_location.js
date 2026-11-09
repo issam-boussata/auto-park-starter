@@ -263,3 +263,60 @@ inputs.forEach(input => {
 })
 
 
+// ================ OPTIONS ================
+
+function AfficherOptions() {
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    const Config = getConfig_local() || config;
+
+    const listes_options = document.getElementById("listes_options");
+    document.getElementById("VÉHICULE").setAttribute("hidden" , "");
+    document.getElementById("RÉCUPÉRATION").setAttribute("hidden" ,"");
+    document.getElementById("OPTIONS").removeAttribute("hidden");
+
+
+    Config.options.forEach(option => {
+        const container = document.createElement("label");
+        const div = document.createElement("div");
+        const nom = document.createElement("h2");
+        const prix = document.createElement("p");
+        const input_check = document.createElement("input");
+
+        container.className = "flex gap-6 border-2 border-[#D8E1EF] rounded-[20px] p-3 space-y-4  has-[:checked]:bg-[#F8FAFF] has-[:checked]:border-[#2852E3]";
+        input_check.type = "checkbox";
+        input_check.addEventListener("click", () => {
+            ValiderChampsOptions(option.id)
+
+        });
+        nom.className = "text-xl font-bold";
+        prix.className = "text-[#697C94]"
+
+        // input_check.value = ;
+        if (selected_Config.options.siegeBebe && option.id === "siegeBebe" || selected_Config.options.conducteurSupplementaire && option.id === "conducteurSupplementaire") {
+
+            input_check.setAttribute("checked", "");
+        }
+
+        nom.textContent = option.nom;
+        prix.textContent = option.prixParJour + " MAD / jour . " + option.prixParJour * 3 + " MAD pour 3 jours";
+
+        div.append(nom, prix)
+        container.append(input_check, div);
+        listes_options.append(container);
+    })
+
+
+}
+
+function ValiderChampsOptions(id) {
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    if (id === "siegeBebe") {
+
+        selected_Config.options.siegeBebe = !selected_Config.options.siegeBebe;
+    } else {
+
+        selected_Config.options.conducteurSupplementaire = !selected_Config.options.conducteurSupplementaire;
+    }
+    setSelectedConfig(selected_Config)
+}
+
