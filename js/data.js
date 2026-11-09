@@ -66,6 +66,55 @@ export const data_voitures = [
   }
 ];
 
+export const config = {
+    voitures: data_voitures ,
+
+    modesRecuperation: [
+        { id: "agence", nom: "À l’agence", fraisFixes: 0 },
+        { id: "aeroport", nom: "À l’aéroport", fraisFixes: 150 },
+        { id: "adresse", nom: "À une adresse", fraisFixes: 100 },
+    ],
+
+    agences: ["Casablanca -- Centre-ville", "Rabat -- Agdal", "Marrakech -- Guaeliz"],
+
+    aeroports: ["Casablanca -- Mohammed V", "Rabat -- Sala", "Marrakech -- Manara"],
+
+    options: [
+        { id: "siegeBebe", nom: "Siage bébé", prixParJour: 30 },
+        {
+            id: "conducteurSupplementaire",
+            nom: "Conducteur supplémentaire",
+            prixParJour: 200,
+        },
+    ],
+};
 
 
+export const selectedConfig = {
+    etape: 1,
+    voitureId: null,
+    dateDebut: "",
+    dateFin: "",
+    nbrJour: 0,
 
+    modeRecuperation: "agence",
+    recuperation: {
+        // Mode agence uniquement.
+        heureRecuperation: "",
+
+        // Mode aeroport uniquement.
+        aeroport: "",
+        numeroVol: "",
+        heureArrivee: "",
+
+        // Mode adresse uniquement.
+        ville: "",
+        adresse: "",
+        heureLivraison: "",
+    },
+
+    options: {
+        siegeBebe: false,
+        conducteurSupplementaire: false,
+    },
+};

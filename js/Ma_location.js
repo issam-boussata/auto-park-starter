@@ -1,56 +1,6 @@
-const voitures = getVoitures();
+import { data_voitures , config , selectedConfig } from './data.js';
+const voitures = getVoitures() || data_voitures;
 
-const config = {
-    voitures: voitures,
-
-    modesRecuperation: [
-        { id: "agence", nom: "À l’agence", fraisFixes: 0 },
-        { id: "aeroport", nom: "À l’aéroport", fraisFixes: 150 },
-        { id: "adresse", nom: "À une adresse", fraisFixes: 100 },
-    ],
-
-    agences: ["Casablanca -- Centre-ville", "Rabat -- Agdal", "Marrakech -- Guaeliz"],
-
-    aeroports: ["Casablanca -- Mohammed V", "Rabat -- Sala", "Marrakech -- Manara"],
-
-    options: [
-        { id: "siegeBebe", nom: "Siage bébé", prixParJour: 30 },
-        {
-            id: "conducteurSupplementaire",
-            nom: "Conducteur supplémentaire",
-            prixParJour: 200,
-        },
-    ],
-};
-
-const selectedConfig = {
-    etape: 1,
-    voitureId: null,
-    dateDebut: "",
-    dateFin: "",
-    nbrJour: 0,
-
-    modeRecuperation: "agence",
-    recuperation: {
-        // Mode agence uniquement.
-        heureRecuperation: "",
-
-        // Mode aeroport uniquement.
-        aeroport: "",
-        numeroVol: "",
-        heureArrivee: "",
-
-        // Mode adresse uniquement.
-        ville: "",
-        adresse: "",
-        heureLivraison: "",
-    },
-
-    options: {
-        siegeBebe: false,
-        conducteurSupplementaire: false,
-    },
-};
 
 // sissionStorage
 function setSelectedConfig(selectedConfig) {
@@ -76,8 +26,11 @@ function getVoitures() {
 // ================ Véhicule ================
 // afficher le véhicule 
 function AfficherVéhicule() {
-    document.getElementById("cinqEtapes").className ="bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-3"
-
+    let Voitures = getVoitures() || data_voitures;
+    document.getElementById("cinqEtapes").className = "bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-3"
+    document.getElementById("VÉHICULE").removeAttribute("hidden");    
+    document.getElementById("RÉCUPÉRATION").setAttribute("hidden" ,"");
+    document.getElementById("OPTIONS").setAttribute("hidden");
     const listes_voitures = document.getElementById("listes_voitures");
 
     // ajouter la date minimum ou input date debut et date fin de location
@@ -89,8 +42,8 @@ function AfficherVéhicule() {
     input_date_fin.setAttribute("min", date_now.toLocaleDateString('en-CA'))
 
 
-    const voitures = getVoitures().filter(v => v.statut === "Disponible");
-    voitures.forEach(voiture => {
+    Voitures = Voitures.filter(v => v.statut === "Disponible");
+    Voitures.forEach(voiture => {
         // creer les elements   
         const container_v = document.createElement("label");
         const div_categorie_check = document.createElement("div");
@@ -132,10 +85,11 @@ function AfficherVéhicule() {
     });
 
 }
-AfficherVéhicule();
+
 
 // valider les champs dates est ajouter les valeur(id_voiture , date debut fin)
 function validerChampsDates() {
+    const selected_Config = getSelectedConfig() || selectedConfig;
     const input_date_debut = document.getElementById("date_debut");
     const input_date_fin = document.getElementById("date_fin");
 
@@ -150,12 +104,11 @@ function validerChampsDates() {
     }
 
     if (input_date_debut.value && input_date_fin.value) {
-        const selectedConfig = getSelectedConfig();
-        selectedConfig.dateDebut = new Date(input_date_debut.value).toLocaleDateString(`en-CA`);
-        selectedConfig.dateFin = new Date(input_date_fin.value).toLocaleDateString(`en-CA`);
+        selected_Config.dateDebut = new Date(input_date_debut.value).toLocaleDateString(`en-CA`);
+        selected_Config.dateFin = new Date(input_date_fin.value).toLocaleDateString(`en-CA`);
         let nbr_jour = (new Date(input_date_fin.value) - new Date(input_date_debut.value)) / (1000 * 60 * 60 * 24);
-        selectedConfig.nbrJour = nbr_jour;
-        setSelectedConfig(selectedConfig);
+        selected_Config.nbrJour = nbr_jour;
+        setSelectedConfig(selected_Config);
         afficherVotreLocation();
 
         const veihcules_message = document.getElementById("veihcules_message");
@@ -165,108 +118,148 @@ function validerChampsDates() {
     }
 
 }
-
+// appeller la fonction valider les Champs des Dates
 document.getElementById("date_debut").addEventListener("input", () => { validerChampsDates() });
 document.getElementById("date_fin").addEventListener("input", () => { validerChampsDates() });
 const choisirVoiture = (id_voiture) => {
-    // const selectedConfig = getSelectedConfig();
-    selectedConfig.voitureId = id_voiture;
-    console.log(id_voiture);
-    setSelectedConfig(selectedConfig);
-    console.log(selectedConfig);
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    selected_Config.voitureId = id_voiture;
+    setSelectedConfig(selected_Config);
 
     afficherVotreLocation();
     document.getElementById("facture").removeAttribute("hidden");
-    document.getElementById("cinqEtapes").className ="bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-2"
+    document.getElementById("cinqEtapes").className = "bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-2"
 
 };
 
-// une fonction pour afficher la cate de votre location
-function afficherVotreLocation() {
-    const selectedConfig = getSelectedConfig();
-    const voitures = getVoitures();
-    const config = getConfig_local();
-
-    const voiture = voitures.find(v => v.id === selectedConfig.voitureId);
-    const recuperation = config.modesRecuperation.find(R => R.id === selectedConfig.modeRecuperation);
-
-    const nom_voiture = document.getElementById("nom-voiture");
-    const prix_voiture = document.getElementById("prix-voiture");
-    const date_debut_fin = document.getElementById("date-debut-fin");
-    const nb_jour = document.getElementById("nb-jour");
-    const prix_fois_jour = document.getElementById("prix-fois-jour");
-    const prix_total = document.getElementById("prix-total");
-    const prix_recuperation = document.getElementById("prix-recuperation");
-    const prix_net = document.getElementById("prix-net");
-
-
-    nom_voiture.textContent = voiture.marque + " " + voiture.modele;
-    prix_voiture.textContent = voiture.categorie + " . " + voiture.prixJour + " DH / Jour";
-    if (new Date(selectedConfig.dateDebut).getMonth() === new Date(selectedConfig.dateFin).getMonth()) {
-        date_debut_fin.textContent = new Date(selectedConfig.dateDebut).getDate() + " → " + new Date(selectedConfig.dateFin).toLocaleDateString('fr-FR', { day: "numeric", month: "long", year: "numeric" });
-    } else {
-        date_debut_fin.textContent = new Date(selectedConfig.dateDebut).toLocaleDateString('fr-FR', { day: "numeric", month: "long" }) + " → " + new Date(selectedConfig.dateFin).toLocaleDateString('fr-FR', { day: "numeric", month: "long", year: "numeric" });
-    }
-    nb_jour.textContent = selectedConfig.nbrJour + " jours · dates incluses";
-    prix_fois_jour.textContent = "Véhicule · " + selectedConfig.nbrJour + " * " + voiture.prixJour + " MAD ";
-    prix_total.textContent = (selectedConfig.nbrJour * voiture.prixJour) + " MAD ";
-    prix_recuperation.textContent = recuperation.fraisFixes === 0 ? "gratuit" : recuperation.fraisFixes + " MAD ";
-    console.log(recuperation.fraisFixes);
-
-    prix_net.textContent = (recuperation.fraisFixes + (selectedConfig.nbrJour * voiture.prixJour)) + " MAD ";
-}
 
 
 // ================ RÉCUPÉRATION ================
 
-function AfficherRepuration(){
-    const config = getConfig_local() ;
-    const listes_modesRecuperation = document.getElementById("listes_modesRecuperation") ;
+function AfficherRepuration() {
+    const Config = getConfig_local() || config;
+    const listes_modesRecuperation = document.getElementById("listes_modesRecuperation");
+    document.getElementById("VÉHICULE").setAttribute("hidden" , "");
+    document.getElementById("OPTIONS").setAttribute("hidden" , "");
+    document.getElementById("RÉCUPÉRATION").removeAttribute("hidden");
 
-    config.modesRecuperation.forEach( modeRecuperation => {
-        const container = document.createElement("label") ;
-        const  nom = document.createElement("h2") ;
-        const prix = document.createElement("p") ;
-        const input_radio = document.createElement("input") ;
-        
-        container.className = "border-2 border-[#D8E1EF] rounded-md p-3 space-y-4  has-[:checked]:bg-[#F8FAFF] has-[:checked]:border-[#2852E3]" ;
-        input_radio.type = "radio" ;
-        input_radio.name = "input_radio" ;
-        input_radio.addEventListener("click" , ()=>{choisModeRecuperation(modeRecuperation.id)});
-        nom.className = "text-xl font-bold" ;
+
+    Config.modesRecuperation.forEach(modeRecuperation => {
+        const container = document.createElement("label");
+        const nom = document.createElement("h2");
+        const prix = document.createElement("p");
+        const input_radio = document.createElement("input");
+
+        container.className = "border-2 border-[#D8E1EF] rounded-md p-3 space-y-4  has-[:checked]:bg-[#F8FAFF] has-[:checked]:border-[#2852E3]";
+        input_radio.type = "radio";
+        input_radio.name = "input_radio";
+        input_radio.addEventListener("click", () => {
+            afficherFormRepuration(modeRecuperation.id)
+
+        });
+        nom.className = "text-xl font-bold";
         prix.className = "text-blue-600"
 
 
-        container.append( input_radio , nom , prix) ;
-        listes_modesRecuperation.append(container) ;
+        container.append(input_radio, nom, prix);
+        listes_modesRecuperation.append(container);
 
 
 
-        nom.textContent = modeRecuperation.nom ;
-        prix.textContent = modeRecuperation.fraisFixes === 0 ? "gratuit" : "+ "+modeRecuperation.fraisFixes + " DH" ;
+        nom.textContent = modeRecuperation.nom;
+        prix.textContent = modeRecuperation.fraisFixes === 0 ? "gratuit" : "+ " + modeRecuperation.fraisFixes + " DH";
 
     })
 }
-AfficherRepuration() ;
 
-function afficherForm(id) {
-    if (id==="agence") {
-        document.getElementById("agence_form").removeAttribute("hidden") ;
-        document.getElementById("aeroport_form").setAttribute("hidden" , "")
-        document.getElementById("adresse_form").setAttribute("hidden" , "")
-        
-        
-    }else if(id === "aeroport"){
-        document.getElementById("aeroport_form").removeAttribute("hidden")
-        document.getElementById("agence_form").setAttribute("hidden" , "") ;
-        document.getElementById("adresse_form").setAttribute("hidden" , "")
-        
-    }else{
+
+function afficherFormRepuration(id) {
+
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    const Config = getConfig_local() || config;
+    if (id === "agence") {
+        document.getElementById("agence_form").removeAttribute("hidden");
+        document.getElementById("aeroport_form").setAttribute("hidden", "")
+        document.getElementById("adresse_form").setAttribute("hidden", "")
+        document.getElementById("Heure_récupération").value = selected_Config.recuperation.heureRecuperation;
+
+    } else if (id === "aeroport") {
+        document.getElementById("aeroport_form").removeAttribute("hidden");
+        document.getElementById("agence_form").setAttribute("hidden", "");
+        document.getElementById("adresse_form").setAttribute("hidden", "");
+        document.getElementById("aeroport_select").innerHTML = "";
+        Config.aeroports.forEach(aeroport => {
+            const option = document.createElement("option");
+            option.textContent = aeroport;
+            option.value = aeroport;
+            document.getElementById("aeroport_select").append(option);
+        });
+        document.getElementById("aeroport_select").value = selected_Config.recuperation.aeroport;
+        document.getElementById("Num_vol").value = selected_Config.recuperation.numeroVol;
+        document.getElementById("Heure_arrive").value = selected_Config.recuperation.heureArrivee;
+
+
+
+
+    } else {
         document.getElementById("adresse_form").removeAttribute("hidden")
-        document.getElementById("aeroport_form").setAttribute("hidden" , "")
-        document.getElementById("agence_form").setAttribute("hidden" , "") ;
+        document.getElementById("aeroport_form").setAttribute("hidden", "")
+        document.getElementById("agence_form").setAttribute("hidden", "");
 
     }
-        
+
+    selected_Config.modeRecuperation = id;
+    setSelectedConfig(selected_Config)
 }
+
+
+
+function ValiderchampsRepuration() {
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    const RÉCUPÉRATION_message = document.getElementById("RÉCUPÉRATION_message");
+
+    if (selected_Config.modeRecuperation === "agence") {
+        const Heure_récupération = document.getElementById("Heure_récupération").value;
+        if (!Heure_récupération) {
+            RÉCUPÉRATION_message.textContent = "vous devez entrer l'heure de récupération";
+            RÉCUPÉRATION_message.style.backgroundColor = "#b423368e";
+            return;
+        }
+        selected_Config.recuperation.heureRecuperation = Heure_récupération;
+
+    } else if (selected_Config.modeRecuperation === "aeroport") {
+        if (!document.getElementById("aeroport_select").value || !document.getElementById("Num_vol").value || !document.getElementById("Heure_arrive").value) {
+            RÉCUPÉRATION_message.textContent = "vous devez remplire toutes les champs ";
+            RÉCUPÉRATION_message.style.backgroundColor = "#b423368e";
+            return;
+        }
+        selected_Config.recuperation.aeroport = document.getElementById("aeroport_select").value;
+        selected_Config.recuperation.numeroVol = document.getElementById("Num_vol").value;
+        selected_Config.recuperation.heureArrivee = document.getElementById("Heure_arrive").value;
+
+    } else {
+        if (!document.getElementById("Ville").value || !document.getElementById("Adresse").value || !document.getElementById("Heure_livraison").value) {
+            RÉCUPÉRATION_message.textContent = "vous devez remplire toutes les champs ";
+            RÉCUPÉRATION_message.style.backgroundColor = "#b423368e";
+            return;
+        }
+        selected_Config.recuperation.ville = document.getElementById("Ville").value;
+        selected_Config.recuperation.adresse = document.getElementById("Adresse").value;
+        selected_Config.recuperation.heureLivraison = document.getElementById("Heure_livraison").value;
+
+    }
+    RÉCUPÉRATION_message.textContent = "Le supplément de récupération est ajouté une seule fois au total.";
+    RÉCUPÉRATION_message.style.backgroundColor = "#EEF2FF";
+    setSelectedConfig(selected_Config)
+}
+
+const inputs = document.querySelectorAll("#Heure_récupération , #aeroport_select , #Num_vol ,#Heure_arrive ,#Ville , #Adresse  , #Heure_livraison ");
+
+inputs.forEach(input => {
+    input.addEventListener("input", () => {
+        ValiderchampsRepuration()
+    });
+
+})
+
 

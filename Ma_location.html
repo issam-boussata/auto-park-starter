@@ -17,9 +17,7 @@
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
+    <!-- <link  href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> -->
     <title>Document</title>
 </head>
 
@@ -75,9 +73,9 @@
                     Récapitulatif
                 </p>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-10">
-                <div id="cinqEtapes" class=" bg-[#FFFFFF] rounded-md  lg:col-span-2 ">
-                    <div hidden class=" p-3 my-1 space-y-6 rounded-md md:p-6">
+            <div class="grid grid-cols-1  lg:grid-cols-3 lg:gap-10">
+                <div id="cinqEtapes" class=" bg-[#FFFFFF] my-6 rounded-md  lg:col-span-2 ">
+                    <div hidden id="VÉHICULE" class=" p-3  space-y-6 rounded-md md:p-6">
 
                         <h5 class="text-blue-600">01 / VÉHICULE</h5>
                         <h2 class="font-bold text-2xl ">Choisissez votre véhicule</h2>
@@ -103,7 +101,7 @@
                         <hr>
 
                     </div>
-                    <div class=" my-6 space-y-6 rounded-md md:p-6">
+                    <div hidden id="RÉCUPÉRATION" class=" space-y-6 rounded-md md:p-6">
 
                         <h5 class="text-blue-600">02 / RÉCUPÉRATION</h5>
                         <h2 class="font-bold text-2xl ">Où récupérer votre voiture ?</h2>
@@ -124,7 +122,6 @@
                             <label for="aeroport_select">Aéroport *</label> <br>
                             <select name="aeroport_select" id="aeroport_select"
                                 class="border-2 border-[#D8E1EF] mb-6 mt-2  w-[100%] h-13 rounded-md p-2">
-                                <option value="">cqsq</option>
                             </select>
                             <div class="lg:grid lg:grid-cols-2 lg:gap-10">
                                 <div>
@@ -148,20 +145,33 @@
                             <input type="text" name="Adresse" id="Adresse"
                                 class="border-2 border-[#D8E1EF] my-2  w-[100%] h-13 rounded-md p-2">
                             <label for="Heure_livraison">Heure de livraison *</label> <br>
-                            <input type="time"  name="Heure_livraison" id="Heure_livraison"
+                            <input type="time" name="Heure_livraison" id="Heure_livraison"
                                 class="border-2 border-[#D8E1EF] my-2  w-[100%] h-13 rounded-md p-2">
                         </div>
                         <p id="RÉCUPÉRATION_message" class="text-[#2852E3] bg-[#EEF2FF] p-4">Le supplément de
                             récupération est ajouté une seule fois au total.</p>
 
                     </div>
-                    <div class="flex justify-between md:p-6">
+                    <div hidden id="OPTIONS" class="space-y-6 rounded-md md:p-6">
+
+                        <h5 class="text-blue-600">03 / OPTIONS</h5>
+                        <h2 class="font-bold text-2xl ">Les petits plus de votre location</h2>
+                        <p class=" text-[#697C94]">Ces options sont facultatives et facturées par jours .</p>
+                        <div id="listes_options" class="space-y-6">
+
+                        </div>
+                        <p id="options_message" class="text-[#2852E3] bg-[#EEF2FF] p-4"> Vous pouvez sélectionner une ,
+                            deux ou aucune option .</p>
+                        <hr>
+
+                    </div>
+                    <div class="flex justify-between mt-[-16px] md:p-6">
                         <button class="py-4 w-40 border-2 rounded-md" id="Précédent" type="button">Recommancer</button>
                         <button class="py-4 w-40 rounded-md text-white bg-[#2852E3]" id="Suivant"
                             type="button">Suivant</button>
                     </div>
                 </div>
-                <div hidden id="facture" class=" bg-[#FFFFFF] p-3 h-fit my-10 space-y-6 rounded-md lg:col-span-1">
+                <div id="facture" class=" bg-[#FFFFFF] mt-6  p-3 h-fit  space-y-6 rounded-md lg:col-span-1">
                     <h5 class="text-blue-600">VOTRE LOCATION</h5>
                     <h2 id="nom-voiture" class="font-bold text-2xl "></h2>
                     <p id="prix-voiture" class=" text-[#697C94]"></p>
@@ -171,6 +181,14 @@
                     <div class="flex justify-between">
                         <p id="prix-fois-jour" class=" text-[#697C94]"></p>
                         <p id="prix-total" class="font-bold "></p>
+                    </div>
+                    <div hidden id="div-siegeBebe" class="flex justify-between">
+                        <p id="siegeBebe" class=" text-[#697C94]"></p>
+                        <p id="prix-siegeBebe" class="font-bold "></p>
+                    </div>
+                    <div hidden id="div-conducteurSupplementaire" class="flex justify-between">
+                        <p id="conducteurSupplementaire" class=" text-[#697C94]"></p>
+                        <p id="prix-conducteurSupplementaire" class="font-bold "></p>
                     </div>
                     <div class="flex justify-between">
                         <p class=" text-[#697C94]">Récupération</p>
