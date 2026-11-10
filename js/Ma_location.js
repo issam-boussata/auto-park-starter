@@ -1,4 +1,4 @@
-import { data_voitures , config , selectedConfig } from './data.js';
+import { data_voitures, config, selectedConfig } from './data.js';
 // const voitures = getVoitures() || data_voitures;
 
 
@@ -6,6 +6,7 @@ import { data_voitures , config , selectedConfig } from './data.js';
 function setSelectedConfig(selectedConfig) {
     sessionStorage.setItem("selectedConfig", JSON.stringify(selectedConfig));
 }
+setSelectedConfig(selectedConfig)
 function getSelectedConfig() {
     const selectedConfig = sessionStorage.getItem("selectedConfig");
     return JSON.parse(selectedConfig);
@@ -13,7 +14,7 @@ function getSelectedConfig() {
 // localStorage
 function setConfig_local(config) {
     localStorage.setItem("config", JSON.stringify(config))
-}
+} 
 function getConfig_local() {
     const config = localStorage.getItem("config");
     return JSON.parse(config);
@@ -27,11 +28,13 @@ function getVoitures() {
 // afficher le véhicule 
 function AfficherVéhicule() {
     let Voitures = getVoitures() || data_voitures;
+
     document.getElementById("cinqEtapes").className = "bg-[#FFFFFF] p-3 my-10 space-y-6 rounded-md md:p-6 lg:col-span-3"
-    document.getElementById("VÉHICULE").removeAttribute("hidden");    
-    document.getElementById("RÉCUPÉRATION").setAttribute("hidden" ,"");
-    document.getElementById("OPTIONS").setAttribute("hidden");
+    document.getElementById("VÉHICULE").removeAttribute("hidden");
+    document.getElementById("RÉCUPÉRATION").setAttribute("hidden", "");
+    document.getElementById("OPTIONS").setAttribute("hidden", "");
     const listes_voitures = document.getElementById("listes_voitures");
+    listes_voitures.innerHTML = " " ;
 
     // ajouter la date minimum ou input date debut et date fin de location
     const input_date_debut = document.getElementById("date_debut");
@@ -116,6 +119,7 @@ function validerChampsDates() {
         veihcules_message.textContent = ` Durée : ${nbr_jour} jours. Les dates de début et de fin sont incluses.`;
 
     }
+    afficherVotreLocation() ;
 
 }
 // appeller la fonction valider les Champs des Dates
@@ -139,8 +143,9 @@ const choisirVoiture = (id_voiture) => {
 function AfficherRepuration() {
     const Config = getConfig_local() || config;
     const listes_modesRecuperation = document.getElementById("listes_modesRecuperation");
-    document.getElementById("VÉHICULE").setAttribute("hidden" , "");
-    document.getElementById("OPTIONS").setAttribute("hidden" , "");
+    listes_modesRecuperation.innerHTML = "" ;
+    document.getElementById("VÉHICULE").setAttribute("hidden", "");
+    document.getElementById("OPTIONS").setAttribute("hidden", "");
     document.getElementById("RÉCUPÉRATION").removeAttribute("hidden");
 
 
@@ -250,7 +255,8 @@ function ValiderchampsRepuration() {
     }
     RÉCUPÉRATION_message.textContent = "Le supplément de récupération est ajouté une seule fois au total.";
     RÉCUPÉRATION_message.style.backgroundColor = "#EEF2FF";
-    setSelectedConfig(selected_Config)
+    setSelectedConfig(selected_Config) ;
+    afficherVotreLocation() ;
 }
 
 const inputs = document.querySelectorAll("#Heure_récupération , #aeroport_select , #Num_vol ,#Heure_arrive ,#Ville , #Adresse  , #Heure_livraison ");
@@ -270,8 +276,9 @@ function AfficherOptions() {
     const Config = getConfig_local() || config;
 
     const listes_options = document.getElementById("listes_options");
-    document.getElementById("VÉHICULE").setAttribute("hidden" , "");
-    document.getElementById("RÉCUPÉRATION").setAttribute("hidden" ,"");
+    listes_options.innerHTML = "";
+    document.getElementById("VÉHICULE").setAttribute("hidden", "");
+    document.getElementById("RÉCUPÉRATION").setAttribute("hidden", "");
     document.getElementById("OPTIONS").removeAttribute("hidden");
 
 
@@ -317,12 +324,15 @@ function ValiderChampsOptions(id) {
 
         selected_Config.options.conducteurSupplementaire = !selected_Config.options.conducteurSupplementaire;
     }
-    setSelectedConfig(selected_Config)
+    setSelectedConfig(selected_Config) ;
+    afficherVotreLocation() ;
 }
 
 
 // une fonction pour afficher la cate de votre location
 function afficherVotreLocation() {
+    document.getElementById("facture").removeAttribute("hidden");
+
     const selected_Config = getSelectedConfig() || selectedConfig;
     const Voitures = getVoitures() || data_voitures;
     const Config = getConfig_local() || config;
@@ -365,6 +375,8 @@ function afficherVotreLocation() {
         siegeBebe.textContent = option.nom + " . " + selected_Config.nbrJour + " * " + option.prixParJour + " MAD ";
         prix_siegeBebe.textContent = (selected_Config.nbrJour * option.prixParJour) + " MAD ";
         options_prix += selected_Config.nbrJour * option.prixParJour;
+    }else{
+        div_siegeBebe.setAttribute("hidden" ,"") ;
     }
     if (selected_Config.options.conducteurSupplementaire) {
         const option = Config.options.find(op => op.id === "conducteurSupplementaire");
@@ -372,36 +384,47 @@ function afficherVotreLocation() {
         conducteurSupplementaire.textContent = option.nom + " . " + selected_Config.nbrJour + " * " + option.prixParJour + " MAD ";
         prix_conducteurSupplementaire.textContent = (selected_Config.nbrJour * option.prixParJour) + " MAD ";
         options_prix += selected_Config.nbrJour * option.prixParJour;
+    }else {
+        div_conducteurSupplementaire.setAttribute("hidden" , "") ;
     }
+
     prix_recuperation.textContent = recuperation.fraisFixes === 0 ? "gratuit" : recuperation.fraisFixes + " MAD ";
 
     prix_net.textContent = (recuperation.fraisFixes + (selected_Config.nbrJour * voiture.prixJour) + options_prix) + " MAD ";
 }
-afficherVotreLocation();
+// afficherVotreLocation();
 function AfficherSteape() {
-    let numSteap = getSelectedConfig().etape || selectedConfig.etape;
+    let numSteap = getSelectedConfig() || selectedConfig;
 
-    if (numSteap === 1) {
+    if (numSteap.etape === 1) {
         AfficherVéhicule()
+
     }
-     else if (numSteap === 2) {
+    else if (numSteap.etape === 2) {
         AfficherRepuration();
-    } 
-    else{
+    }
+    else {
         AfficherOptions()
     }
 
 }
 AfficherSteape()
-document.getElementById("Précédent").addEventListener("click" , ()=>{
-    const selected_Config = getSelectedConfig() || selectedConfig ;
-    selected_Config.etape -- ;
-    setSelectedConfig(selected_Config) ;
-    AfficherSteape() ;
+document.getElementById("Précédent").addEventListener("click", () => {
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    if (1 < selected_Config.etape) {
+
+        selected_Config.etape--;
+    }
+    setSelectedConfig(selected_Config);
+    AfficherSteape();
 })
-document.getElementById("Suivant").addEventListener("click" , ()=>{
-    const selected_Config = getSelectedConfig() || selectedConfig ;
-    selected_Config.etape ++ ;
-    setSelectedConfig(selected_Config) ;
-    AfficherSteape() ;
+document.getElementById("Suivant").addEventListener("click", () => {
+    const selected_Config = getSelectedConfig() || selectedConfig;
+    if (selected_Config.etape < 4) {
+
+        selected_Config.etape++;
+    }
+    
+    setSelectedConfig(selected_Config);
+    AfficherSteape();
 })

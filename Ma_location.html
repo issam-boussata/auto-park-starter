@@ -126,7 +126,7 @@
                             <div class="lg:grid lg:grid-cols-2 lg:gap-10">
                                 <div>
                                     <label for="Num_vol">Heure de récupération *</label> <br>
-                                    <input type="text" name="Num_vol" id="Num_vol"
+                                    <input type="time" name="Num_vol" id="Num_vol"
                                         class="border-2 border-[#D8E1EF] mb-6 mt-2  w-[100%] h-13 rounded-md p-2">
                                 </div>
                                 <div>
@@ -154,7 +154,7 @@
                     </div>
                     <div hidden id="OPTIONS" class="space-y-6 rounded-md md:p-6">
 
-                        <h5 class="text-blue-600">03 / OPTIONS</h5>
+                        <h5 class="text-blue-600 ">03 / OPTIONS</h5>
                         <h2 class="font-bold text-2xl ">Les petits plus de votre location</h2>
                         <p class=" text-[#697C94]">Ces options sont facultatives et facturées par jours .</p>
                         <div id="listes_options" class="space-y-6">
@@ -165,13 +165,13 @@
                         <hr>
 
                     </div>
-                    <div class="flex justify-between mt-[-16px] md:p-6">
-                        <button class="py-4 w-40 border-2 rounded-md" id="Précédent" type="button">Recommancer</button>
+                    <div class="flex justify-between  mt-[-16px] md:p-6">
+                        <button class="py-4 w-40 border-2 rounded-md" id="Précédent" type="button">Précédent</button>
                         <button class="py-4 w-40 rounded-md text-white bg-[#2852E3]" id="Suivant"
                             type="button">Suivant</button>
                     </div>
                 </div>
-                <div id="facture" class=" bg-[#FFFFFF] mt-6  p-3 h-fit  space-y-6 rounded-md lg:col-span-1">
+                <div id="facture" hidden class=" bg-[#FFFFFF] mt-6  p-3 h-fit  space-y-6 rounded-md lg:col-span-1">
                     <h5 class="text-blue-600">VOTRE LOCATION</h5>
                     <h2 id="nom-voiture" class="font-bold text-2xl "></h2>
                     <p id="prix-voiture" class=" text-[#697C94]"></p>
